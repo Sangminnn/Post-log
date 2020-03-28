@@ -6,6 +6,7 @@
 
 원래의 project는 class형 component로 이루어져 있는데, 개인적인 custom 과정을 거치면서 react hooks를 사용한 구조로 바꾸었음.
 
+
 ## 사용한 기술
 
 - react (hooks)
@@ -17,7 +18,10 @@
 - axios
 - styled-components
 
+
+
 ## Project 구조
+
 
 - components - logic이 들어있지 않은 재사용 가능한 view 파일
 - containers - 주요한 logic들과 components가 결합된 파일
@@ -28,11 +32,16 @@
 - store - sagaMiddleware를 연결하기 위한 store가 들어있는 폴더
 - lib - axios에 대한 api를 만들어둔 폴더
 
+
+
 ## 이전 Project보다 나아진 점
+
 
 1. 다양한 api들을 연결하는 과정에서 redux-saga에 대한 이해도 향상
 2. 여러가지 간단한 module을 만들어 재사용성의 장점에 대해 체감
 
+
 ---
+
 
 아직 google 및 facebook에 대한 oauth2 적용이 진행중입니다.
