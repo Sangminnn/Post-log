@@ -6,9 +6,7 @@
 
 원래의 project는 class형 component로 이루어져 있는데, 개인적인 custom 과정을 거치면서 react hooks를 사용한 구조로 바꾸었음.
 
-간단히 글을 Post-it을 게시판에 붙히는 형태의 UI로 구성하여 가벼우면서 
-
-공부하던 login기능도 구현한 project
+간단히 글을 Post-it을 게시판에 붙히는 형태의 UI로 구성하여 가벼우면서 공부하던 login기능도 구현한 project
 
 
 ## 사용한 기술
