@@ -5,7 +5,9 @@ import { shadow } from 'lib/styleUtils';
 
 
 const Positioner = styled.div`
-  flex: 1;
+  display: flex;
+  justify-content: center;
+  // flex: 1;
   padding: 2rem 1rem;
 `;
 
@@ -13,6 +15,10 @@ const ShadowedBox = styled.div`
   ${shadow(0)};
 
   width: 300px;
+
+  @media (max-width: 949px) {
+    width: 100%;
+  }
 `;
 
 const Wrapper = styled.div`

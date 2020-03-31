@@ -8,19 +8,31 @@ const Positioner = styled.div`
   padding-left: 7rem;
   padding-right: 7rem;
   position: relative;
+
+
+  @media (max-width: 748px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
 `;
 
 const ShadowedBox = styled.div`
   width: 1300px;
   ${shadow(1)};
-`
+`;
 
 const ContentsWrapper = styled.div`
-  padding: 6rem 3rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-`
+
+  padding: 6rem 3rem;
+
+  @media (max-width: 748px) {
+    padding: 3rem 1rem;
+  }
+`;
 
 const PostWrapper = ({children}) => (
   <Positioner>

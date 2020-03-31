@@ -1,31 +1,22 @@
-import React, { Component } from 'react'
+import React from 'react';
 import { ContentWrapper, ContentItem } from 'components/Post/Read';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-class ReadPost extends Component {
-  render() {
-    const { loadPost } = this.props;
-    console.log(loadPost);
-    const { title, author, content, createdAt } = loadPost.toJS();
 
-    return (
-      <ContentWrapper>
-        <ContentItem
-          author={author}
-          title={title}
-          time={createdAt.slice(0,10)}
-          content={content}
-        />
-      </ContentWrapper>
-    )
-  }
-}
+function ReadPost() {
 
-export default connect(
-  (state) => ({
-    loadPost: state.post.get('loadPost'),
-  }),
-  (dispatch) => ({
+  const { title, author, content, createdAt } = useSelector(state => state.post.loadPost);
 
-  })
-)(ReadPost);
+  return (
+    <ContentWrapper>
+      <ContentItem
+        author={author}
+        title={title}
+        time={createdAt}
+        content={content}
+      />
+    </ContentWrapper>
+  )
+};
+
+export default ReadPost;

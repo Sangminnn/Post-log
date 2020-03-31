@@ -1,39 +1,28 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as baseActions from 'redux/modules/base';
-import { AuthWrapper } from 'components/Auth';
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux';
 import { Route } from 'react-router-dom';
+import { AuthWrapper } from 'components/Auth';
 import { Login, Register, SocialRegister, Callback } from 'containers/Auth';
 
+import * as BaseActions from 'actions/base';
 
-class Auth extends Component {
-  componentWillMount() {
-    this.props.BaseActions.setVisibility(false)
-  }
+function Auth() {
+  const dispatch = useDispatch();
 
-  componentWillUnmount() {
-    this.props.BaseActions.setVisibility(true)
-  }
+  useEffect(() => {
+    dispatch(BaseActions.setVisibility(false));
 
-  render() {
-    return (
-      <AuthWrapper>
-        <Route path="/auth/login" component={Login}/>
-        <Route exact path="/auth/register" component={Register}/>
-        <Route path="/auth/register/social" component={SocialRegister}/>
-        <Route path="/auth/login/callback" component={Callback} />
-        {/* <Route path="/auth/login/facebook/callback" component={Callback} /> */}
-      </AuthWrapper>
-    )
-  }
-}
+    return () => dispatch(BaseActions.setVisibility(true));
+  }, []);
 
-export default connect(
-  (state) => ({
+  return (
+    <AuthWrapper>
+      <Route path="/auth/login" component={Login}/>
+      <Route path="/auth/register" component={Register}/>
+      <Route path="/auth/socialRegister" component={SocialRegister}/>
+      <Route path="/auth/login/social/callback" component={Callback}/>
+    </AuthWrapper>
+  )
+};
 
-  }),
-  (dispatch) => ({
-    BaseActions: bindActionCreators(baseActions, dispatch)
-  })
-)(Auth);
+export default Auth;

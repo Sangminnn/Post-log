@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components';
 import oc from 'open-color';
+import { Link } from 'react-router-dom';
 
-const Positioner = styled.div`
+const Positioner = styled.header`
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -27,10 +28,11 @@ const HeaderContents = styled.div`
   align-items: center;
 `;
 
-const Logo = styled.div`
+const Logo = styled(Link)`
   font-family: 'Rajdhani';
   color: ${oc.teal[6]};
   font-size: 1.4rem;
+  text-decoration: none;
 `;
 
 const Spacer = styled.div`
@@ -47,7 +49,7 @@ const Header = ({children}) => {
     <Positioner>
       <WhiteBackground>
         <HeaderContents>
-          <Logo>Logo</Logo>
+          <Logo to="/">Logo</Logo>
           <Spacer/>
           {children}
         </HeaderContents>

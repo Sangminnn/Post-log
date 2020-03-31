@@ -1,139 +1,153 @@
-import React, { Component } from 'react'
+import qs from 'qs';
+import React, { useState, useEffect, useCallback } from 'react'
+import { useHistory, useLocation } from "react-router-dom";
 import { AuthContent, InputWithLabel, AuthButton, SocialLoginButton, RightAlignedLink, AuthError } from 'components/Auth';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import * as authActions from 'redux/modules/auth';
-import * as userActions from 'redux/modules/user';
+import * as AuthActions from 'actions/auth';
+import * as UserActions from 'actions/user';
 
-import storage from 'lib/storage';
+function Login () {
+  let history = useHistory();
+  let location = useLocation();
 
-class Login extends Component {
+  const dispatch = useDispatch();
 
-  componentWillUnmount() {
-    const { AuthActions } = this.props;
-    AuthActions.initializeForm('login');
-  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState(''); 
+  
+  const { success, error } = useSelector(state => state.auth.login);
+  const result = useSelector(state => state.auth.result);
+  const loggedInfo = useSelector(state => state.user.loggedInfo);
 
-  handleChange = (e) => {
-    const { AuthActions } = this.props;
-    const { name, value } = e.target;
+  // const socialAuthResult = useSelector(state => state.auth.socialAuthResult);
 
-    AuthActions.changeInput({
-      name,
-      value,
-      form: 'login'
-    });
-  }
+  // 내가 생각하는 componentWillUnmount
+  // useEffect(() => {
+  //   return () => dispatch(AuthActions.initializeForm('login'));
+  // })
 
-  setError = (message) => {
-    const { AuthActions } = this.props;
-    AuthActions.setError({
-      form: 'login',
-      message
-    });
-    return false;
-  }
-
-  handleLocalLogin = async () => {
-    const { form, AuthActions, UserActions, history } = this.props;
-    const { email, password } = form.toJS();
-
-    try {
-      await AuthActions.localLogin({ email, password });
-      const loggedInfo = this.props.result.toJS();
-      
-      UserActions.setLoggedInfo(loggedInfo);
-      history.push('/post/postList');
-      storage.set('loggedInfo', loggedInfo);
-    } catch (e) {
-
-      console.log('a');
-      this.setError('잘못된 계정정보입니다.'); 
+  useEffect(() => {
+    if(error) {
+      console.log(error);
+      setError('잘못된 정보입니다.');
     }
-  }
+  }, [error])
 
-  onSocialLogin = async (provider) => {
-    const { UserActions, AuthActions, history } = this.props;
-
-    try {
-      await AuthActions.getSocialToken(provider);
-      
-      const { accessToken } = this.props.socialAuthResult;
-      
-      await AuthActions.socialExists({provider, accessToken});
-
-      const { email } = this.props.result.toJS();
-      console.log(email);
-      if(!email) {
-        // 유저 profile에 대한 객체가 넘어올거임(유저정보가 있을경우 받아서 Loggedinfo에 넣어줌)
-        console.log('유저정보 있음');
-        const loggedInfo = this.props.result.toJS();
-
-        UserActions.setLoggedInfo(loggedInfo);
-        history.push('/post/postList');
-        storage.set('loggedInfo', loggedInfo);
-      } else {
-        // email값을 params로 보내는 ? 혹은 그 값을 value로 넣어 보내주는 로직
-        // history.push('/register/social')쪽으로 보내면 될듯
-        // 근데 params는 조작 여부가 있지않을까
-        // setEmail함수를 만드는 ...?
-        console.log('유저정보 없음');
-        await AuthActions.setEmail(email);
-        history.push('/auth/register/social');
-      }
-
-    } catch (e) {
-      console.log(e);
-      this.setError('잘못된 계정정보입니다.');
+  useEffect(() => {
+    if(success) {
+      history.push('/');
     }
-  }
-
-  render() {
-    const { email, password } = this.props.form.toJS();
-    const { handleChange, handleLocalLogin, onSocialLogin } = this;
-    const { error } = this.props;
-
-    return (
-      <div>
-        <AuthContent title="로그인">
-          <InputWithLabel
-            label="이메일"
-            name="email"
-            placeholder="이메일"
-            value={email}
-            onChange={handleChange}
-          />
-          <InputWithLabel
-            label="비밀번호"
-            name="password"
-            type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={handleChange}
-          />
-        </AuthContent>
-        {
-          error && <AuthError>{error}</AuthError>
-        }
-        <AuthButton onClick={handleLocalLogin}>제출</AuthButton>
-        <SocialLoginButton type='google' onSocialLogin={onSocialLogin} />
-        <SocialLoginButton type='facebook' onSocialLogin={onSocialLogin} />
-        <RightAlignedLink to="/auth/register">회원가입</RightAlignedLink>
-      </div>
-    )
-  }
-}
-
-export default connect(
-  (state) => ({
-    form: state.auth.getIn(['login', 'form']),
-    error: state.auth.getIn(['login', 'error']),
-    result: state.auth.get('result'),
-    socialAuthResult: state.auth.get('socialAuthResult'),
-  }),
-  (dispatch) => ({
-    AuthActions: bindActionCreators(authActions, dispatch),
-    UserActions: bindActionCreators(userActions, dispatch)
   })
-)(Login);
+
+  const handleChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      
+      (name === 'email') ? setEmail(value) : setPassword(value)
+    }, []);
+
+  const setError = useCallback(
+    (message) => {
+      dispatch(
+        AuthActions.setError({
+          form: 'login',
+          message
+        })
+      )
+      return false;
+    }, []);
+
+  const handleLocalLogin = async () => {
+      await dispatch(AuthActions.localLoginRequest({ email, password }));
+      await dispatch(UserActions.setLoggedInfo(loggedInfo));
+      // storage.set('loggedInfo', result.loggedInfo);
+    };
+  
+
+  const onSocialLogin = async (provider) => {
+    console.log('social login');
+    
+    const nextUrl = '/';
+
+    if (provider === 'google') {
+      console.log('google');
+      const AUTHORIZE_URI = "https://accounts.google.com/o/oauth2/v2/auth";
+      const CLIENT_ID = "646814998521-mpbmbvtmkd4oo2ipmqqsf8mt9lmi28oh.apps.googleusercontent.com";
+
+      const queryStr = qs.stringify({
+        client_id: CLIENT_ID,
+        redirect_uri: 'http://localhost:4000/api/auth/callback/google',
+        response_type: "code",
+        access_type: 'offline',
+        scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile" 
+      })
+
+      // const googleLoginUrl = `/auth/callback/google/login?next=${nextUrl}`;
+      const googleLoginUrl = AUTHORIZE_URI + "?" + queryStr;
+      window.location.replace(googleLoginUrl);
+      return;
+    }
+    // if (provider === 'facebook') {
+    //   const facebookLogin = `${process.env.API_HOST ||
+    //     ''}/auth/callback/facebook/login?next=${nextUrl}`;
+    //   window.location.replace(facebookLogin);
+    // }
+    
+    // try {
+      // await dispatch(AuthActions.getSocialTokenRequest(provider));
+    //   // accessToken은 socialAuthResult꺼
+    
+    // 이 부분도 getSocialToken에서 받아온 값으로 바로 dispatch해주어야하기때문에
+    // getSocialToken의 success saga로 동작을 옮기는게 좋아보임.
+    //   await dispatch(AuthActions.socialExists({provider, accessToken}));
+
+    //   console.log(result.email);
+    //   if(!result.email) {
+    //     console.log('유저정보 있음');
+        
+    //     dispatch(UserActions.setLoggedInfo(result.loggedInfo));
+    //     history.push('/post/postList');
+    //     storage.set('loggedInfo', result.loggedInfo);
+    //   } else {
+    //     console.log('유저정보 없음');
+    //     await dispatch(AuthActions.setEmail(result.email));
+    //     history.push('/auth/register/social');
+    //   }
+    // } catch (e) {
+    //   console.log(e);
+    //   setError('잘못된 계정정보입니다.');
+    // }
+  }
+
+  return (
+    <div>
+      <AuthContent title="로그인">
+        <InputWithLabel
+          label="이메일"
+          name="email"
+          placeholder="이메일"
+          value={email}
+          onChange={handleChange}
+        />
+        <InputWithLabel
+          label="비밀번호"
+          name="password"
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={handleChange}
+        />
+      </AuthContent>
+      {
+        error && <AuthError>{error}</AuthError>
+      }
+      <AuthButton onClick={handleLocalLogin}>제출</AuthButton>
+      <SocialLoginButton type='google' onSocialLogin={onSocialLogin} />
+      <SocialLoginButton type='facebook' onSocialLogin={onSocialLogin} />
+      <RightAlignedLink to="/auth/register">회원가입</RightAlignedLink>
+    </div> 
+  )
+};
+
+export default Login;

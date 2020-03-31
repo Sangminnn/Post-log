@@ -1,87 +1,73 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Header, LoginButton, WelcomeMessage, MenuButton, MenuContent, UserMenu, Separator, MenuWrapper, RightAlignedContents, RotatedSquare } from 'components/Base/Header';
-import { connect } from 'react-redux';
-import * as userActions from 'redux/modules/user';
-import * as baseActions from 'redux/modules/base';
-import { bindActionCreators } from 'redux';
+import { useSelector, useDispatch } from 'react-redux';
+
+import * as UserActions from 'actions/user';
+import * as BaseActions from 'actions/base';
+
 import storage from 'lib/storage';
 
+function HeaderContainer() {
+  const dispatch = useDispatch();
+  
+  const visible = useSelector(state => state.base.header.visible);
+  const menuToggle = useSelector(state => state.base.header.menuToggle);
+  const user = useSelector(state => state.user);
 
-class HeaderContainer extends Component {
+  const logged = useSelector(state => state.user.logged);
+  
+  const handleLogout = async () => {
+    console.log('로그아웃 헤더측 실행');
+    await dispatch(UserActions.logoutRequest());
+    storage.remove('loggedInfo');
+    window.location.href = '/';
+  };
 
-    handleLogout = async () => {
-        const { UserActions } = this.props;
-        try {
-            await UserActions.logout();
-        } catch (e) {
-            console.log(e);
-        }
-
-        storage.remove('loggedInfo');
-        window.location.href = '/'; // 홈페이지로 새로고침
+  const handleMenuToggle = async () => {
+    try {
+      await dispatch(BaseActions.toggleMenu(!menuToggle));
+    } catch (e) {
+      console.log(e);
     }
+    console.log(menuToggle);
+  }
 
-    handleMenuToggle = async () => {
-      const { menuToggle } = this.props;
+  // visible이 없다면 null return 
+  if(!visible) return null;
 
-      try { 
-        await this.props.BaseActions.toggleMenu(!menuToggle);
-      } catch (e) {
-        console.log(e);
-      } 
-      console.log(menuToggle);
-    }
+  return (
+      <Header>
+      { logged
+          ? (<>
+              <WelcomeMessage>
+                { user['loggedInfo']['username'] }
+              </WelcomeMessage>
+              <RightAlignedContents>
+                <MenuButton onClick={handleMenuToggle}>
+                  { menuToggle ? "메뉴 닫기" : "메뉴 열기" }
+                </MenuButton>
+                  {
+                    menuToggle && (
+                      <>
+                        <MenuWrapper>
+                          <RotatedSquare/>
+                          <UserMenu>
+                            <MenuContent to='/post/write' onClick={handleMenuToggle}>새 게시글</MenuContent>
+                            <Separator/>
+                            <MenuContent onClick={handleMenuToggle}>유저정보</MenuContent>
+                            <Separator/>
+                            <MenuContent onClick={handleLogout}>로그아웃</MenuContent>
+                          </UserMenu>
+                        </MenuWrapper>
+                      </>
+                    )
+                  }
+              </RightAlignedContents>
+          </> )
+          : <LoginButton to='/auth/login'>로그인 / 가입</LoginButton>
+      }
+    </Header>   
+  )
+};
 
-    render() {
-        const { visible, user, menuToggle } = this.props;
-        if(!visible) return null;
-
-
-
-        return (
-            <Header>
-                { user.get('logged') 
-                    ? (<>
-                        <WelcomeMessage>
-                          {user.getIn(['loggedInfo', 'username'])}
-                        </WelcomeMessage>
-                        <RightAlignedContents>
-                          <MenuButton onClick={this.handleMenuToggle}>
-                            { menuToggle ? "메뉴 닫기" : "메뉴 열기" }
-                          </MenuButton>
-                            {
-                              menuToggle && (
-                                <>
-                                  <MenuWrapper>
-                                    <RotatedSquare/>
-                                    <UserMenu>
-                                      <MenuContent to='/post/write'>새 게시글</MenuContent>
-                                      <Separator/>
-                                      <MenuContent>유저정보</MenuContent>
-                                      <Separator/>
-                                      <MenuContent>로그아웃</MenuContent>
-                                    </UserMenu>
-                                  </MenuWrapper>
-                                </>
-                              )
-                            }
-                        </RightAlignedContents>
-                    </> )
-                    : <LoginButton to='/auth/login'>로그인 / 가입</LoginButton>
-                }
-            </Header>
-        );
-    }
-}
-
-export default connect(
-    (state) => ({
-        visible: state.base.getIn(['header', 'visible']),
-        menuToggle: state.base.getIn(['header', 'menuToggle']),
-        user: state.user,
-    }),
-    (dispatch) => ({
-        BaseActions: bindActionCreators(baseActions, dispatch),
-        UserActions: bindActionCreators(userActions, dispatch),
-    })
-)(HeaderContainer);
+export default HeaderContainer;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { shadow } from 'lib/styleUtils';
 
-const Positioner = styled.div`
+const Positioner = styled.section`
   display: flex;
   width: 100%;
   padding-left: 7rem;
@@ -10,19 +10,20 @@ const Positioner = styled.div`
   position: relative;
 `;
 
-const ShadowedBox = styled.div`
+const ShadowedBox = styled.section`
   width: 1300px;
   ${shadow(1)};
 `;
 
-const ContentsWrapper = styled.div`
+const ContentsWrapper = styled.article`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 30px;
+
   padding: 6rem 3rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
 `;
 
-const BaseWrapper = ({children}) => (
+const MainWrapper = ({children}) => (
   <Positioner>
     <ShadowedBox>
       <ContentsWrapper>
@@ -32,4 +33,4 @@ const BaseWrapper = ({children}) => (
   </Positioner>
 );
 
-export default BaseWrapper;
+export default MainWrapper;

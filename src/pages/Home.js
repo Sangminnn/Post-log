@@ -1,26 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route } from 'react-router-dom';
 import { MainWrapper } from 'components/Base/Main';
+import { MainList } from 'containers/Base';
 
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+function Home() {
 
-class Home extends Component {
+  return (
+    <MainWrapper>
+      <Route path='/' component={MainList}/>
+    </MainWrapper>
+  )
+};
 
-  render() {
-    return (
-      <MainWrapper>
-        메인페이지입니다.
-      </MainWrapper>
-    )
-  }
-}
-
-export default connect(
-  (state) => ({
-    
-  }),
-  (dispatch) => ({
-    
-  })
-)(Home);
+export default Home;

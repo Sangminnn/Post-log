@@ -1,48 +1,42 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Home, Auth, Post } from 'pages';
 import HeaderContainer from 'containers/Base/HeaderContainer';
 
 import storage from 'lib/storage';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as userActions from 'redux/modules/user';
 
-class App extends Component {
+import * as UserActions from 'actions/user';
 
-  initializeUserInfo = async () => {
+function App () {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    initializeUserInfo();
+  }, []);
+
+  const initializeUserInfo = async () => {
     const loggedInfo = storage.get('loggedInfo');
     if(!loggedInfo) return;
 
-    const { UserActions } = this.props;
-    UserActions.setLoggedInfo(loggedInfo);
+    await dispatch(UserActions.setLoggedInfo(loggedInfo));
+
     try {
-      await UserActions.checkStatus();
+      await UserActions.checkStatusRequest();
     } catch (e) {
       storage.remove('loggedInfo');
       window.location.href = '/auth/login?expired';
     }
   }
 
-  componentDidMount() {
-    this.initializeUserInfo();
-  }
+  return (
+    <div>
+      <HeaderContainer/>
+      <Route exact path="/" component={Home}/>
+      <Route path="/auth" component={Auth}/>
+      <Route path="/post" component={Post}/>
+    </div>
+  )
+};
 
-  render() {
-    return (
-      <div>
-        <HeaderContainer/>
-        <Route exact path="/" component={Home}/>
-        <Route path="/auth" component={Auth}/>
-        <Route path="/post" component={Post}/>
-      </div>
-    )
-  }
-}
-
-export default connect(
-  null,
-  (dispatch) => ({
-    UserActions: bindActionCreators(userActions, dispatch)
-  })
-)(App);
+export default App;

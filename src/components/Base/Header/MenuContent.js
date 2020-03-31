@@ -19,8 +19,8 @@ const Text = styled(Link)`
   }
 `;
 
-const MenuContent = ({to, children}) => (
-    <Text to={to}>
+const MenuContent = ({to, children, onClick}) => (
+    <Text to={to} onClick={onClick}>
       {children}
     </Text>
 );
