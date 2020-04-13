@@ -2,9 +2,7 @@
 
 ## TMI
 
-공부해오던 기술들에 대한 심화학습을 진행하기 위해 react 공부시에 많이 참고하던 velopert 개발자님의 '리액트를 다루는 기술' 책을 보고 배우며 만든 toy project를 개인적으로 custom
-
-원래의 project는 class형 component로 이루어져 있는데, 개인적인 custom 과정을 거치면서 react hooks를 사용한 구조로 바꾸었음.
+공부해오던 기술들에 대한 심화학습을 진행하기 위해 react 공부시에 많이 참고하던 velopert 개발자님의 '리액트를 다루는 기술' 책을 보고 배우며 만든 toy project
 
 간단히 글귀를 Post-it에 적어 게시판에 붙히는 형태의 UI로 구성하여 가벼우면서 공부하던 login기능도 구현한 project
 
@@ -46,3 +44,5 @@
 2. 여러가지 간단한 module을 만들어 재사용성의 장점에 대해 체감하고 중요성을 알게 되었음.
 
 아직 google 및 facebook에 대한 oauth2 적용이 진행중
+
+++) 현재는 google oauth2 에 대한 기능만 구현 완료
