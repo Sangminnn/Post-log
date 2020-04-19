@@ -35,6 +35,21 @@
 - lib
     - axios에 대한 api를 만들어둔 폴더
 
+## Project 화면 구성
+
+### 메인 화면
+
+![](https://images.velog.io/images/sangminnn/post/3c241965-659f-451b-aa66-5345322c6a38/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202020-04-20%20%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB%201.24.00.png)
+
+### 로그인 화면
+
+![](https://images.velog.io/images/sangminnn/post/73b66e80-3f2c-435c-8555-6ad53bb54577/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202020-04-20%20%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB%201.24.11.png)
+
+
+### 로그인 완료 화면
+
+![](https://images.velog.io/images/sangminnn/post/746a2bad-5475-45aa-9fd6-d388a85fac30/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202020-04-20%20%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB%201.24.29.png)
+
 
 ## 이전 Project보다 나아진 점
 
